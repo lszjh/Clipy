@@ -1,0 +1,69 @@
+# Build Clipy DMG via GitHub Actions
+# 用法：
+#   1. 在 GitHub 上 Fork https://github.com/Clipy/Clipy
+#   2. 把本文件放到 fork 仓库的 .github/workflows/build-clipy-dmg.yml
+#   3. 在 fork 的 Actions 页面选择 "Build Clipy DMG" → Run workflow → 选分支/标签 → 运行
+#   4. 运行完成后在 Artifacts 区下载 Clipy-dmg.zip，解压得到 .dmg 安装包
+name: Build Clipy DMG
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 要构建的 Clipy 分支或标签（develop / 1.3.0）
+        required: true
+        default: develop
+
+jobs:
+  build:
+    name: Build and package DMG
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Clipy source
+        uses: actions/checkout@v4
+        with:
+          repository: Clipy/Clipy
+          ref: ${{ github.event.inputs.ref }}
+          fetch-depth: 0
+
+      # 默认签名证书仅维护者可用，本地/CI 构建需切到 ad-hoc 签名
+      - name: Enable ad-hoc signing
+        run: |
+          python3 - "$GITHUB_WORKSPACE/Configurations/CodeSigning.xcconfig" <<'PY'
+          import sys
+          p = sys.argv[1]
+          s = open(p, encoding="utf-8").read()
+          s = s.replace('// #include "Configurations/CodeSigning-AdHoc.xcconfig"',
+                        '#include "Configurations/CodeSigning-AdHoc.xcconfig"')
+          open(p, "w", encoding="utf-8").write(s)
+          PY
+
+      - name: Build Release
+        run: |
+          xcodebuild \
+            -project Clipy.xcodeproj \
+            -scheme Clipy \
+            -configuration Release \
+            -derivedDataPath build \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            build
+
+      - name: Verify code signature
+        run: codesign --verify --deep --strict "build/Build/Products/Release/Clipy.app"
+
+      - name: Create DMG
+        run: |
+          set -euo pipefail
+          VERSION="$(git describe --tags --abbrev=0 2>/dev/null || echo dev)"
+          mkdir -p dist/Clipy
+          cp -R "build/Build/Products/Release/Clipy.app" dist/Clipy/
+          ln -s /Applications dist/Clipy/Applications
+          hdiutil create -volname "Clipy" -srcfolder dist/Clipy -ov -format UDZO "Clipy_${VERSION}.dmg"
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clipy-dmg
+          path: Clipy_*.dmg
