@@ -14,51 +14,6 @@ import Foundation
 import Magnet
 import Sharing
 
-enum AppStorageValues {
-    /// Registers default values for settings accessed through Cocoa Bindings in XIB files.
-    static func register(in defaults: UserDefaults = .standard) {
-        defaults.register(
-            defaults: [
-                AppStorageKeys.loginItem.rawValue: AppStorageKey<Bool>.Default.isLaunchAtLogin.initialValue,
-                AppStorageKeys.suppressAlertForLoginItem.rawValue: AppStorageKey<Bool>.Default.suppressesLoginItemAlert.initialValue,
-                AppStorageKeys.inputPasteCommand.rawValue: AppStorageKey<Bool>.Default.pastesAutomatically.initialValue,
-                AppStorageKeys.reorderClipsAfterPasting.rawValue: AppStorageKey<Bool>.Default.reordersClipsAfterPasting.initialValue,
-                AppStorageKeys.collectCrashReport.rawValue: AppStorageKey<Bool>.Default.collectsCrashReports.initialValue,
-                AppStorageKeys.menuItemsTitleStartWithZero.rawValue: AppStorageKey<Bool>.Default.startsMenuItemTitlesAtZero.initialValue,
-                AppStorageKeys.showAlertBeforeClearHistory.rawValue: AppStorageKey<Bool>.Default.showsClearHistoryAlert.initialValue,
-                AppStorageKeys.addClearHistoryMenuItem.rawValue: AppStorageKey<Bool>.Default.showsClearHistoryMenuItem.initialValue,
-                AppStorageKeys.showIconInTheMenu.rawValue: AppStorageKey<Bool>.Default.showsIconsInMenu.initialValue,
-                AppStorageKeys.menuItemsAreMarkedWithNumbers.rawValue: AppStorageKey<Bool>.Default.marksMenuItemsWithNumbers.initialValue,
-                AppStorageKeys.showToolTipOnMenuItem.rawValue: AppStorageKey<Bool>.Default.showsToolTipsOnMenuItems.initialValue,
-                AppStorageKeys.showImageInTheMenu.rawValue: AppStorageKey<Bool>.Default.showsImagesInMenu.initialValue,
-                AppStorageKeys.addNumericKeyEquivalents.rawValue: AppStorageKey<Bool>.Default.addsNumericKeyEquivalents.initialValue,
-                AppStorageKeys.overwriteSameHistory.rawValue: AppStorageKey<Bool>.Default.overwritesDuplicateHistory.initialValue,
-                AppStorageKeys.copySameHistory.rawValue: AppStorageKey<Bool>.Default.allowsDuplicateHistory.initialValue,
-                AppStorageKeys.showColorPreviewInTheMenu.rawValue: AppStorageKey<Bool>.Default.showsColorPreviewInMenu.initialValue,
-                AppStorageKeys.ignoreConcealedPasteboardType.rawValue: AppStorageKey<Bool>.Default.ignoresConcealedPasteboardTypes.initialValue,
-                AppStorageKeys.enableAutomaticCheck.rawValue: AppStorageKey<Bool>.Default.checksForUpdatesAutomatically.initialValue,
-                AppStorageKeys.pastePlainText.rawValue: AppStorageKey<Bool>.Default.pastesPlainTextWithModifier.initialValue,
-                AppStorageKeys.deleteHistory.rawValue: AppStorageKey<Bool>.Default.deletesHistoryWithModifier.initialValue,
-                AppStorageKeys.pasteAndDeleteHistory.rawValue: AppStorageKey<Bool>.Default.pastesAndDeletesHistoryWithModifier.initialValue,
-                AppStorageKeys.observerScreenshot.rawValue: AppStorageKey<Bool>.Default.observesScreenshots.initialValue,
-                AppStorageKeys.maxHistorySize.rawValue: AppStorageKey<Int>.Default.maximumHistoryCount.initialValue,
-                AppStorageKeys.showStatusItem.rawValue: AppStorageKey<Int>.Default.statusItemDisplayMode.initialValue,
-                AppStorageKeys.menuIconSize.rawValue: AppStorageKey<Int>.Default.menuIconSize.initialValue,
-                AppStorageKeys.maxMenuItemTitleLength.rawValue: AppStorageKey<Int>.Default.maximumMenuItemTitleLength.initialValue,
-                AppStorageKeys.numberOfItemsPlaceInline.rawValue: AppStorageKey<Int>.Default.inlineMenuItemLimit.initialValue,
-                AppStorageKeys.numberOfItemsPlaceInsideFolder.rawValue: AppStorageKey<Int>.Default.folderMenuItemLimit.initialValue,
-                AppStorageKeys.maxLengthOfToolTip.rawValue: AppStorageKey<Int>.Default.maximumToolTipLength.initialValue,
-                AppStorageKeys.thumbnailWidth.rawValue: AppStorageKey<Int>.Default.thumbnailWidth.initialValue,
-                AppStorageKeys.thumbnailHeight.rawValue: AppStorageKey<Int>.Default.thumbnailHeight.initialValue,
-                AppStorageKeys.checkInterval.rawValue: AppStorageKey<Int>.Default.updateCheckInterval.initialValue,
-                AppStorageKeys.pastePlainTextModifier.rawValue: AppStorageKey<Int>.Default.plainTextPasteModifier.initialValue,
-                AppStorageKeys.deleteHistoryModifier.rawValue: AppStorageKey<Int>.Default.historyDeletionModifier.initialValue,
-                AppStorageKeys.pasteAndDeleteHistoryModifier.rawValue: AppStorageKey<Int>.Default.pasteAndDeleteHistoryModifier.initialValue
-            ]
-        )
-    }
-}
-
 extension SharedKey where Self == AppStorageKey<Bool>.Default {
     static var isLaunchAtLogin: Self {
         Self[.appStorage(AppStorageKeys.loginItem.rawValue), default: false]
@@ -86,6 +41,14 @@ extension SharedKey where Self == AppStorageKey<Bool>.Default {
 
     static var showsClearHistoryAlert: Self {
         Self[.appStorage(AppStorageKeys.showAlertBeforeClearHistory.rawValue), default: true]
+    }
+
+    static var clearsHistoryOnQuit: Self {
+        Self[.appStorage(AppStorageKeys.clearsHistoryOnQuit.rawValue), default: false]
+    }
+
+    static var clearsHistoryPeriodically: Self {
+        Self[.appStorage(AppStorageKeys.clearsHistoryPeriodically.rawValue), default: false]
     }
 
     static var showsClearHistoryMenuItem: Self {
@@ -128,8 +91,8 @@ extension SharedKey where Self == AppStorageKey<Bool>.Default {
         Self[.appStorage(AppStorageKeys.ignoreConcealedPasteboardType.rawValue), default: false]
     }
 
-    static var checksForUpdatesAutomatically: Self {
-        Self[.appStorage(AppStorageKeys.enableAutomaticCheck.rawValue), default: true]
+    static var ignoresUniversalClipboard: Self {
+        Self[.appStorage(AppStorageKeys.ignoresUniversalClipboard.rawValue), default: false]
     }
 
     static var pastesPlainTextWithModifier: Self {
@@ -186,10 +149,6 @@ extension SharedKey where Self == AppStorageKey<Int>.Default {
         Self[.appStorage(AppStorageKeys.thumbnailHeight.rawValue), default: 32]
     }
 
-    static var updateCheckInterval: Self {
-        Self[.appStorage(AppStorageKeys.checkInterval.rawValue), default: 86_400]
-    }
-
     static var plainTextPasteModifier: Self {
         Self[.appStorage(AppStorageKeys.pastePlainTextModifier.rawValue), default: 0]
     }
@@ -209,6 +168,12 @@ extension SharedKey where Self == AppStorageKey<PasteboardTypeSettings>.Default 
             .appStorage(AppStorageKeys.pasteboardTypeSettings.rawValue),
             default: PasteboardTypeSettings()
         ]
+    }
+}
+
+extension SharedKey where Self == AppStorageKey<HistoryClearInterval>.Default {
+    static var historyClearInterval: Self {
+        Self[.appStorage(AppStorageKeys.historyClearInterval.rawValue), default: .oneHour]
     }
 }
 
@@ -235,6 +200,10 @@ extension SharedKey where Self == AppStorageKey<KeyCombo?>.Default {
             // ⌘ + Shift + B
             default: KeyCombo(QWERTYKeyCode: 11, carbonModifiers: 768)
         ]
+    }
+
+    static var editSnippetsKeyCombo: Self {
+        Self[.appStorage(AppStorageKeys.editSnippetsKeyCombo.rawValue), default: nil]
     }
 
     static var clearHistoryKeyCombo: Self {

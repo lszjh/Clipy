@@ -11,12 +11,12 @@
 //
 
 import Cocoa
-import Clocks
 import Combine
 import Dependencies
 import Magnet
 import Screeen
 import ServiceManagement
+import Settings
 import Sharing
 
 class AppDelegate: NSObject, NSMenuItemValidation {
@@ -24,13 +24,19 @@ class AppDelegate: NSObject, NSMenuItemValidation {
     // MARK: - Properties
     private let screenshotObserver = ScreenShotObserver()
     private var cancellables: Set<AnyCancellable> = []
+    @MainActor private lazy var settingsWindowController: SettingsWindowController = {
+        let controller = SettingsWindowController(
+            panes: SettingsPane.allCases.map { $0.asPanelConvertible() },
+            animated: false
+        )
+        controller.window?.delegate = self
+        return controller
+    }()
 
     @Dependency(\.context)
     var context
     @Dependency(\.mainQueue)
     private var mainQueue
-    @Dependency(\.excludeAppService)
-    private var excludeAppService
     @Dependency(\.pasteboardHistoryRepository)
     private var pasteboardHistoryRepository
     @Dependency(\.snippetRepository)
@@ -54,10 +60,6 @@ class AppDelegate: NSObject, NSMenuItemValidation {
     private var suppressesLoginItemAlert
     @Shared(.pastesAutomatically)
     private var pastesAutomatically
-    @Shared(.maximumHistoryCount)
-    private var maximumHistoryCount
-    @Shared(.reordersClipsAfterPasting)
-    private var reordersClipsAfterPasting
     @Shared(.observesScreenshots)
     private var observesScreenshots
 
@@ -70,9 +72,10 @@ class AppDelegate: NSObject, NSMenuItemValidation {
     }
 
     // MARK: - Menu Actions
-    @objc func showPreferenceWindow() {
+    @MainActor @objc func showSettingsWindow() {
         NSApp.activate(ignoringOtherApps: true)
-        CPYPreferencesWindowController.sharedController.showWindow(self)
+        settingsWindowController.show()
+        settingsWindowController.window?.orderFrontRegardless()
     }
 
     @objc func showSnippetEditorWindow() {
@@ -114,7 +117,7 @@ class AppDelegate: NSObject, NSMenuItemValidation {
     private func promptToAddLoginItems() {
         let alert = NSAlert()
         alert.messageText = String(localized: "Launch Clipy on system startup?")
-        alert.informativeText = String(localized: "You can change this setting in the Preferences if you want")
+        alert.informativeText = String(localized: "You can change this later in Settings.")
         alert.addButton(withTitle: String(localized: "Launch on system startup"))
         alert.addButton(withTitle: String(localized: "Don't Launch"))
         alert.showsSuppressionButton = true
@@ -131,13 +134,20 @@ class AppDelegate: NSObject, NSMenuItemValidation {
     }
 }
 
+// MARK: - Settings Window
+extension AppDelegate: NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, !window.makeFirstResponder(nil) else { return }
+        window.endEditing(for: nil)
+    }
+}
+
 // MARK: - NSApplication Delegate
 extension AppDelegate: NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         guard !isTesting else { return }
 
-        AppStorageValues.register()
         AppMigrator().run()
 
         // SDKs
@@ -160,28 +170,18 @@ extension AppDelegate: NSApplicationDelegate {
 
         // Services
         clipService.startMonitoring()
-        excludeAppService.startMonitoring()
         hotKeyService.setupDefaultHotKeys()
 
         // Managers
         menuManager.setup()
         // Screenshot
         screenshotObserver.delegate = self
-
-        // Periodically trim excess history using the current size limit and sort preference.
-        Task(priority: .utility) { [weak self] in
-            @Dependency(\.continuousClock) var continuousClock
-
-            for await _ in continuousClock.timer(interval: .seconds(60)) {
-                guard let self else { return }
-                pasteboardHistoryRepository.deleteOverflowingHistories(
-                    sortsByCreatedAt: !reordersClipsAfterPasting,
-                    maxHistorySize: maximumHistoryCount
-                )
-            }
-        }
     }
 
+    func applicationWillTerminate(_ notification: Notification) {
+        guard !isTesting else { return }
+        clipService.applicationWillTerminate()
+    }
 }
 
 // MARK: - Bind

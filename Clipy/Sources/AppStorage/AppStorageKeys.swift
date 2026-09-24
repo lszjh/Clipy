@@ -23,6 +23,9 @@ enum AppStorageKeys: String {
     case reorderClipsAfterPasting = "kCPYPrefReorderClipsAfterPasting"
     case addClearHistoryMenuItem = "kCPYPrefAddClearHistoryMenuItemKey"
     case showAlertBeforeClearHistory = "kCPYPrefShowAlertBeforeClearHistoryKey"
+    case clearsHistoryOnQuit
+    case clearsHistoryPeriodically
+    case historyClearInterval
     case menuItemsAreMarkedWithNumbers
     case showToolTipOnMenuItem
     case showImageInTheMenu
@@ -38,8 +41,7 @@ enum AppStorageKeys: String {
     case collectCrashReport = "kCPYCollectCrashReport"
     case showColorPreviewInTheMenu = "kCPYPrefShowColorPreviewInTheMenu"
     case ignoreConcealedPasteboardType = "kCPYPrefIgnoreConcealedPasteboardType"
-    case enableAutomaticCheck = "kCPYEnableAutomaticCheckKey"
-    case checkInterval = "kCPYUpdateCheckIntervalKey"
+    case ignoresUniversalClipboard
     case pastePlainText = "kCPYBetaPastePlainText"
     case pastePlainTextModifier = "kCPYBetaPastePlainTextModifier"
     case deleteHistory = "kCPYBetaDeleteHistory"
@@ -52,6 +54,7 @@ enum AppStorageKeys: String {
     case mainKeyCombo
     case historyKeyCombo
     case snippetKeyCombo
+    case editSnippetsKeyCombo
     case clearHistoryKeyCombo
     case folderKeyCombos
 }

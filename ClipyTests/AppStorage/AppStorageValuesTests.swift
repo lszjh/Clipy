@@ -26,6 +26,8 @@ struct AppStorageValuesTests {
         @Shared(.collectsCrashReports) var collectsCrashReports
         @Shared(.startsMenuItemTitlesAtZero) var startsMenuItemTitlesAtZero
         @Shared(.showsClearHistoryAlert) var showsClearHistoryAlert
+        @Shared(.clearsHistoryOnQuit) var clearsHistoryOnQuit
+        @Shared(.clearsHistoryPeriodically) var clearsHistoryPeriodically
         @Shared(.showsClearHistoryMenuItem) var showsClearHistoryMenuItem
         @Shared(.showsIconsInMenu) var showsIconsInMenu
         @Shared(.marksMenuItemsWithNumbers) var marksMenuItemsWithNumbers
@@ -36,7 +38,7 @@ struct AppStorageValuesTests {
         @Shared(.allowsDuplicateHistory) var allowsDuplicateHistory
         @Shared(.showsColorPreviewInMenu) var showsColorPreviewInMenu
         @Shared(.ignoresConcealedPasteboardTypes) var ignoresConcealedPasteboardTypes
-        @Shared(.checksForUpdatesAutomatically) var checksForUpdatesAutomatically
+        @Shared(.ignoresUniversalClipboard) var ignoresUniversalClipboard
         @Shared(.pastesPlainTextWithModifier) var pastesPlainTextWithModifier
         @Shared(.deletesHistoryWithModifier) var deletesHistoryWithModifier
         @Shared(.pastesAndDeletesHistoryWithModifier) var pastesAndDeletesHistoryWithModifier
@@ -49,6 +51,8 @@ struct AppStorageValuesTests {
         #expect(collectsCrashReports)
         #expect(!startsMenuItemTitlesAtZero)
         #expect(showsClearHistoryAlert)
+        #expect(!clearsHistoryOnQuit)
+        #expect(!clearsHistoryPeriodically)
         #expect(showsClearHistoryMenuItem)
         #expect(showsIconsInMenu)
         #expect(marksMenuItemsWithNumbers)
@@ -59,11 +63,17 @@ struct AppStorageValuesTests {
         #expect(allowsDuplicateHistory)
         #expect(showsColorPreviewInMenu)
         #expect(!ignoresConcealedPasteboardTypes)
-        #expect(checksForUpdatesAutomatically)
+        #expect(!ignoresUniversalClipboard)
         #expect(pastesPlainTextWithModifier)
         #expect(!deletesHistoryWithModifier)
         #expect(!pastesAndDeletesHistoryWithModifier)
         #expect(!observesScreenshots)
+    }
+
+    @Test
+    func loadDefaultHistoryClearInterval() {
+        @Shared(.historyClearInterval) var historyClearInterval
+        #expect(historyClearInterval == .oneHour)
     }
 
     @Test
@@ -77,7 +87,6 @@ struct AppStorageValuesTests {
         @Shared(.maximumToolTipLength) var maximumToolTipLength
         @Shared(.thumbnailWidth) var thumbnailWidth
         @Shared(.thumbnailHeight) var thumbnailHeight
-        @Shared(.updateCheckInterval) var updateCheckInterval
         @Shared(.plainTextPasteModifier) var plainTextPasteModifier
         @Shared(.historyDeletionModifier) var historyDeletionModifier
         @Shared(.pasteAndDeleteHistoryModifier) var pasteAndDeleteHistoryModifier
@@ -91,7 +100,6 @@ struct AppStorageValuesTests {
         #expect(maximumToolTipLength == 200)
         #expect(thumbnailWidth == 100)
         #expect(thumbnailHeight == 32)
-        #expect(updateCheckInterval == 86_400)
         #expect(plainTextPasteModifier == 0)
         #expect(historyDeletionModifier == 0)
         #expect(pasteAndDeleteHistoryModifier == 0)
@@ -109,6 +117,7 @@ struct AppStorageValuesTests {
         @Shared(.mainKeyCombo) var mainKeyCombo
         @Shared(.historyKeyCombo) var historyKeyCombo
         @Shared(.snippetKeyCombo) var snippetKeyCombo
+        @Shared(.editSnippetsKeyCombo) var editSnippetsKeyCombo
         @Shared(.clearHistoryKeyCombo) var clearHistoryKeyCombo
         @Shared(.folderKeyCombos) var folderKeyCombos
 
@@ -124,6 +133,7 @@ struct AppStorageValuesTests {
         #expect(defaultSnippetKeyCombo.QWERTYKeyCode == 11)
         #expect(defaultSnippetKeyCombo.modifiers == 768)
 
+        #expect(editSnippetsKeyCombo == nil)
         #expect(clearHistoryKeyCombo == nil)
         #expect(folderKeyCombos.isEmpty)
     }
