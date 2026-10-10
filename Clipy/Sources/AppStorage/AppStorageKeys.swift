@@ -16,6 +16,7 @@ enum AppStorageKeys: String {
     case maxHistorySize = "kCPYPrefMaxHistorySizeKey"
     case inputPasteCommand = "kCPYPrefInputPasteCommandKey"
     case showIconInTheMenu = "kCPYPrefShowIconInTheMenuKey"
+    case showsSnippetsAboveHistory
     case numberOfItemsPlaceInline = "kCPYPrefNumberOfItemsPlaceInlineKey"
     case numberOfItemsPlaceInsideFolder = "kCPYPrefNumberOfItemsPlaceInsideFolderKey"
     case maxMenuItemTitleLength = "kCPYPrefMaxMenuItemTitleLengthKey"
@@ -52,6 +53,7 @@ enum AppStorageKeys: String {
     case pasteboardTypeSettings
     case excludedApplications
     case mainKeyCombo
+    case settingsKeyCombo
     case historyKeyCombo
     case snippetKeyCombo
     case editSnippetsKeyCombo

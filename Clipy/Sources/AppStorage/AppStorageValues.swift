@@ -59,6 +59,10 @@ extension SharedKey where Self == AppStorageKey<Bool>.Default {
         Self[.appStorage(AppStorageKeys.showIconInTheMenu.rawValue), default: true]
     }
 
+    static var showsSnippetsAboveHistory: Self {
+        Self[.appStorage(AppStorageKeys.showsSnippetsAboveHistory.rawValue), default: false]
+    }
+
     static var marksMenuItemsWithNumbers: Self {
         Self[.appStorage(AppStorageKeys.menuItemsAreMarkedWithNumbers.rawValue), default: true]
     }
@@ -208,6 +212,15 @@ extension SharedKey where Self == AppStorageKey<KeyCombo?>.Default {
 
     static var clearHistoryKeyCombo: Self {
         Self[.appStorage(AppStorageKeys.clearHistoryKeyCombo.rawValue), default: nil]
+    }
+}
+
+extension SharedKey where Self == AppStorageKey<KeyCombo>.Default {
+    static var settingsKeyCombo: Self {
+        Self[
+            .appStorage(AppStorageKeys.settingsKeyCombo.rawValue),
+            default: KeyCombo(key: .v, cocoaModifiers: [.control, .option, .shift, .command])
+        ]
     }
 }
 
