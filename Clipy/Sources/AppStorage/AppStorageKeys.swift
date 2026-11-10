@@ -15,8 +15,8 @@ enum AppStorageKeys: String {
     case menuIconSize = "kCPYPrefMenuIconSizeKey"
     case maxHistorySize = "kCPYPrefMaxHistorySizeKey"
     case inputPasteCommand = "kCPYPrefInputPasteCommandKey"
-    case showIconInTheMenu = "kCPYPrefShowIconInTheMenuKey"
     case showsSnippetsAboveHistory
+    case highlightsFirstItemOnPopUp
     case numberOfItemsPlaceInline = "kCPYPrefNumberOfItemsPlaceInlineKey"
     case numberOfItemsPlaceInsideFolder = "kCPYPrefNumberOfItemsPlaceInsideFolderKey"
     case maxMenuItemTitleLength = "kCPYPrefMaxMenuItemTitleLengthKey"
@@ -41,6 +41,8 @@ enum AppStorageKeys: String {
     case copySameHistory = "kCPYPrefCopySameHistroy"
     case collectCrashReport = "kCPYCollectCrashReport"
     case showColorPreviewInTheMenu = "kCPYPrefShowColorPreviewInTheMenu"
+    case parsesColorCodesWithoutHash
+    case parsesCSSNamedColors
     case ignoreConcealedPasteboardType = "kCPYPrefIgnoreConcealedPasteboardType"
     case ignoresUniversalClipboard
     case pastePlainText = "kCPYBetaPastePlainText"

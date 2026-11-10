@@ -29,8 +29,8 @@ struct AppStorageValuesTests {
         @Shared(.clearsHistoryOnQuit) var clearsHistoryOnQuit
         @Shared(.clearsHistoryPeriodically) var clearsHistoryPeriodically
         @Shared(.showsClearHistoryMenuItem) var showsClearHistoryMenuItem
-        @Shared(.showsIconsInMenu) var showsIconsInMenu
         @Shared(.showsSnippetsAboveHistory) var showsSnippetsAboveHistory
+        @Shared(.highlightsFirstItemOnPopUp) var highlightsFirstItemOnPopUp
         @Shared(.marksMenuItemsWithNumbers) var marksMenuItemsWithNumbers
         @Shared(.showsToolTipsOnMenuItems) var showsToolTipsOnMenuItems
         @Shared(.showsImagesInMenu) var showsImagesInMenu
@@ -38,6 +38,8 @@ struct AppStorageValuesTests {
         @Shared(.overwritesDuplicateHistory) var overwritesDuplicateHistory
         @Shared(.allowsDuplicateHistory) var allowsDuplicateHistory
         @Shared(.showsColorPreviewInMenu) var showsColorPreviewInMenu
+        @Shared(.parsesColorCodesWithoutHash) var parsesColorCodesWithoutHash
+        @Shared(.parsesCSSNamedColors) var parsesCSSNamedColors
         @Shared(.ignoresConcealedPasteboardTypes) var ignoresConcealedPasteboardTypes
         @Shared(.ignoresUniversalClipboard) var ignoresUniversalClipboard
         @Shared(.pastesPlainTextWithModifier) var pastesPlainTextWithModifier
@@ -55,8 +57,8 @@ struct AppStorageValuesTests {
         #expect(!clearsHistoryOnQuit)
         #expect(!clearsHistoryPeriodically)
         #expect(showsClearHistoryMenuItem)
-        #expect(showsIconsInMenu)
         #expect(!showsSnippetsAboveHistory)
+        #expect(highlightsFirstItemOnPopUp)
         #expect(marksMenuItemsWithNumbers)
         #expect(showsToolTipsOnMenuItems)
         #expect(showsImagesInMenu)
@@ -64,6 +66,8 @@ struct AppStorageValuesTests {
         #expect(overwritesDuplicateHistory)
         #expect(allowsDuplicateHistory)
         #expect(showsColorPreviewInMenu)
+        #expect(parsesColorCodesWithoutHash)
+        #expect(!parsesCSSNamedColors)
         #expect(!ignoresConcealedPasteboardTypes)
         #expect(!ignoresUniversalClipboard)
         #expect(pastesPlainTextWithModifier)

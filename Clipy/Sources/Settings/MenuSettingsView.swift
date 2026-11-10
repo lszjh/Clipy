@@ -13,8 +13,6 @@ struct MenuSettingsView: View {
     private var allowsDuplicateHistory
     @Shared(.overwritesDuplicateHistory)
     private var overwritesDuplicateHistory
-    @Shared(.showsIconsInMenu)
-    private var showsIconsInMenu
     @Shared(.marksMenuItemsWithNumbers)
     private var marksMenuItemsWithNumbers
     @Shared(.startsMenuItemTitlesAtZero)
@@ -23,6 +21,8 @@ struct MenuSettingsView: View {
     private var addsNumericKeyEquivalents
     @Shared(.showsSnippetsAboveHistory)
     private var showsSnippetsAboveHistory
+    @Shared(.highlightsFirstItemOnPopUp)
+    private var highlightsFirstItemOnPopUp
     @Shared(.showsClearHistoryMenuItem)
     private var showsClearHistoryMenuItem
     @Shared(.showsClearHistoryAlert)
@@ -39,6 +39,10 @@ struct MenuSettingsView: View {
     private var thumbnailHeight
     @Shared(.showsColorPreviewInMenu)
     private var showsColorPreviewInMenu
+    @Shared(.parsesColorCodesWithoutHash)
+    private var parsesColorCodesWithoutHash
+    @Shared(.parsesCSSNamedColors)
+    private var parsesCSSNamedColors
 
     var body: some View {
         SettingsGrid {
@@ -81,10 +85,6 @@ struct MenuSettingsView: View {
 
             SettingsSection(title: .Settings.menuItems, bottomDivider: true) {
                 Toggle(
-                    .Settings.showIconsInMenuItems,
-                    isOn: Binding($showsIconsInMenu)
-                )
-                Toggle(
                     .Settings.markMenuItemsWithNumbers,
                     isOn: Binding($marksMenuItemsWithNumbers)
                 )
@@ -102,6 +102,12 @@ struct MenuSettingsView: View {
                     .Settings.showSnippetsAboveHistory,
                     isOn: Binding($showsSnippetsAboveHistory)
                 )
+                Toggle(
+                    .Settings.highlightTheFirstItemWhenOpeningTheMenuWithAShortcut,
+                    isOn: Binding($highlightsFirstItemOnPopUp)
+                )
+                Text(.Settings.firstItemHighlightDescription)
+                    .settingDescription()
             }
 
             SettingsSection(title: .Settings.clearHistory, bottomDivider: true) {
@@ -159,6 +165,21 @@ struct MenuSettingsView: View {
                     .Settings.showColorCodePreview,
                     isOn: Binding($showsColorPreviewInMenu)
                 )
+                Toggle(
+                    .Settings.parseColorCodesWithoutHash,
+                    isOn: Binding($parsesColorCodesWithoutHash)
+                )
+                .padding(.leading, 20)
+                .disabled(!showsColorPreviewInMenu)
+                Toggle(
+                    .Settings.parseCSSNamedColors,
+                    isOn: Binding($parsesCSSNamedColors)
+                )
+                .padding(.leading, 20)
+                .disabled(!showsColorPreviewInMenu)
+                Text(.Settings.colorCodeParsingDescription)
+                    .settingDescription()
+                    .padding(.leading, 20)
             }
         }
     }

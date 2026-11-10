@@ -55,12 +55,12 @@ extension SharedKey where Self == AppStorageKey<Bool>.Default {
         Self[.appStorage(AppStorageKeys.addClearHistoryMenuItem.rawValue), default: true]
     }
 
-    static var showsIconsInMenu: Self {
-        Self[.appStorage(AppStorageKeys.showIconInTheMenu.rawValue), default: true]
-    }
-
     static var showsSnippetsAboveHistory: Self {
         Self[.appStorage(AppStorageKeys.showsSnippetsAboveHistory.rawValue), default: false]
+    }
+
+    static var highlightsFirstItemOnPopUp: Self {
+        Self[.appStorage(AppStorageKeys.highlightsFirstItemOnPopUp.rawValue), default: true]
     }
 
     static var marksMenuItemsWithNumbers: Self {
@@ -89,6 +89,14 @@ extension SharedKey where Self == AppStorageKey<Bool>.Default {
 
     static var showsColorPreviewInMenu: Self {
         Self[.appStorage(AppStorageKeys.showColorPreviewInTheMenu.rawValue), default: true]
+    }
+
+    static var parsesColorCodesWithoutHash: Self {
+        Self[.appStorage(AppStorageKeys.parsesColorCodesWithoutHash.rawValue), default: true]
+    }
+
+    static var parsesCSSNamedColors: Self {
+        Self[.appStorage(AppStorageKeys.parsesCSSNamedColors.rawValue), default: false]
     }
 
     static var ignoresConcealedPasteboardTypes: Self {
